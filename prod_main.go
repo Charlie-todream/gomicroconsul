@@ -6,6 +6,8 @@ import (
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/web"
 	"github.com/micro/go-plugins/registry/consul/v2"
+	"log"
+	"net/http"
 )
 
 func main() {
@@ -27,10 +29,16 @@ func main() {
 	v1Group := ginRouter.Group("/v1")
 	{
 		v1Group.Handle("POST", "/prods", func(context *gin.Context) {
+			var pr ProdServcie.ProdsRequest
+			err := context.Bind(&pr)
+			if err != nil || pr.Size <=0 {
+				log.Println(err)
+				pr = ProdServcie.ProdsRequest{Size: 2}
+			}
 			context.JSON(
-				200,
+				http.StatusOK,
 				gin.H{
-					"data":ProdServcie.NewProdList(2),
+					"data":ProdServcie.NewProdList(pr.Size),
 				})
 		})
 
@@ -43,5 +51,6 @@ func main() {
 		web.Metadata(map[string]string{"protocol": "http"}), // 否则500错误
 	web.Registry(consulReg), // 注册到哪个服务器上的consul中
 	)
+	server.Init()
 	server.Run()
 }

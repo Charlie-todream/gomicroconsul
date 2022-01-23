@@ -16,7 +16,7 @@ func callApiTwo(s selector.Selector)  {
 		client.ContentType("application/json"),
 	)
 
-	req := myClient.NewRequest("prodservice", "/v1/prods", map[string]string{})
+	req := myClient.NewRequest("prodservice", "/v1/prods", map[string]interface{}{"size":4})
 	var rsp map[string]interface{}
 	err := myClient.Call(context.Background(), req, &rsp)
 	if err != nil {

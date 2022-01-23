@@ -7,6 +7,10 @@ type ProdModel struct {
 	ProdName string
 }
 
+type ProdsRequest struct {
+	Size int `form:"size"`
+}
+
 func NewProd(id int, pname string) *ProdModel {
 	return &ProdModel{ProdName: pname, ProdID: id}
 }
