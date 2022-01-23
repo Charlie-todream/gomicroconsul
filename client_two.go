@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/charlie/gomicroconsul/Models"
 	"github.com/micro/go-micro/v2/client"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/registry"
@@ -16,14 +17,16 @@ func callApiTwo(s selector.Selector)  {
 		client.ContentType("application/json"),
 	)
 
-	req := myClient.NewRequest("prodservice", "/v1/prods", map[string]interface{}{"size":4})
-	var rsp map[string]interface{}
+	//req := myClient.NewRequest("prodservice", "/v1/prods", map[string]interface{}{"size":4})
+	req := myClient.NewRequest("prodservice", "/v1/prods",Models.ProdRequest{Size: 6})
+	//var rsp map[string]interface{}
+	var rsp Models.ProdListResponse // 这里使用生成的response对象，客户端只需要传入这个就可以了，无需关心服务端返回什么格式，因为服务端已经用rpc框架定义好了这一切，我们使用即可
 	err := myClient.Call(context.Background(), req, &rsp)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	log.Println(rsp["data"])
+	log.Println(rsp.GetData())
 }
 
 func main()  {
