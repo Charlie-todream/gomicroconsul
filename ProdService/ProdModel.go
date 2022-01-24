@@ -3,8 +3,8 @@ package ProdServcie
 import "strconv"
 
 type ProdModel struct {
-	ProdID   int
-	ProdName string
+	ProdID   int `json:"pid"`
+	ProdName string `json:"pname"`
 }
 
 type ProdsRequest struct {
