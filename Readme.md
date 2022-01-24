@@ -13,5 +13,7 @@ go get github.com/micro/protoc-gen-micro
 // go run main.go prod_main.go --server_address  127.0.0.1:8000
 // go run main.go prod_main.go --server_address  127.0.0.1:8001
 
+go get github.com/favadi/protoc-go-inject-tag
+
 
 
