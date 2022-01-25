@@ -47,7 +47,7 @@ func NewProdService(name string, c client.Client) ProdService {
 		c = client.NewClient()
 	}
 	if len(name) == 0 {
-		name = "Models"
+		name = "Services"
 	}
 	return &prodService{
 		c:    c,
