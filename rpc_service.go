@@ -13,7 +13,7 @@ func main() {
 		registry.Addrs("127.0.0.1:8500"),
 	)
 	service := micro.NewService(
-		micro.Name("prodservice"),
+		micro.Name("ProdService"),
 		micro.Address(":8011"),
 		micro.Registry(consuleReg),
 	)
