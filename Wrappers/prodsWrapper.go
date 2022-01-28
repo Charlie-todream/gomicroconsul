@@ -11,6 +11,18 @@ import (
 type ProdsWrapper struct {
 	client.Client
 }
+// 通用降级方法
+func defaultData(rsp interface{})  {
+	switch t := rsp.(type) {
+
+	case *Services.ProdListResponse:
+		defaultProds(rsp)
+	case *Services.ProdDetailResponse:
+		t.Data = newProd(10,"优衣库")
+	}
+
+}
+
 
 func defaultProds(rsp interface{}) {
 	models := make([]*Services.ProdModel, 0)
@@ -34,13 +46,16 @@ func (this *ProdsWrapper) Call(ctx context.Context, req client.Request, rsp inte
 	   }
 	*/
 	configA := hystrix.CommandConfig{
-		Timeout: 5000,
+		Timeout: 2000,
+		RequestVolumeThreshold: 2,// 并发数
+		ErrorPercentThreshold: 20, // 当请求达到20个开始熔断
+		SleepWindow: 5000,   // 熔断器打开之后 过5秒再次开始判断这个方法ok
 	}
 	hystrix.ConfigureCommand(cmdName, configA)
 	return hystrix.Do(cmdName, func() error {
 		return this.Client.Call(ctx, req, rsp) //调用rpc api接口
 	}, func(e error) error { //降级函数
-		defaultProds(rsp)
+		defaultData(rsp)
 		return nil
 	})
 }

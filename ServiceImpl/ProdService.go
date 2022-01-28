@@ -26,3 +26,9 @@ func (*ProdService) GetProdList(ctx context.Context, in *Services.ProdRequest, r
 	res.Data = models
 	return nil
 }
+
+func (*ProdService) GetProdDetail(ctx context.Context,req *Services.ProdRequest,res *Services.ProdDetailResponse) error {
+	time.Sleep(time.Second * 3)  // 设置3秒延迟
+	res.Data = newProd(req.ProdId,"无商品")
+	return nil
+}

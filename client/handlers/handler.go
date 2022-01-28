@@ -6,9 +6,26 @@ import (
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
+
 func newProd(id int32, pname string) *Services.ProdModel {
 	return &Services.ProdModel{ProdID: id, ProdName: pname}
 }
+
+func PanicIfError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+func GetProdDetail(ginCtx *gin.Context) {
+
+	var prodReq Services.ProdRequest
+	PanicIfError(ginCtx.BindUri(&prodReq)) //这里要绑定的是uri，因为是get请求参数从uri中拿到的不是form表单
+	prodService := ginCtx.Keys["ProdService"].(Services.ProdService) //类型断言为对应的请求类型
+	resp, _ := prodService.GetProdDetail(context.Background(), &prodReq)
+	ginCtx.JSON(200, gin.H{"data": resp.Data})
+
+}
+
 
 // 降级后的默认商品
 func defaultProds()(*Services.ProdListResponse,error) {
@@ -21,6 +38,8 @@ func defaultProds()(*Services.ProdListResponse,error) {
 	res.Data = models
 	return res,nil
 }
+
+
 // GetProdList 显示商品列表
 func GetProdList(c *gin.Context) {
 	prodService := c.Keys["ProdService"].(Services.ProdService)
